@@ -11,4 +11,4 @@ RUN ./mvnw dependency:go-offline
 COPY src ./src
 EXPOSE 8081
 #run inside container
-CMD ["./mvnw", "spring-boot:run"]
+CMD ["java","-jar","/home/devops-automation.jar"]
