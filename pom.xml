@@ -52,6 +52,8 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
         </plugins>
+
+        <finalName>devops-automation</finalName>
     </build>
 
 </project>
