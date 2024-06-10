@@ -1,6 +1,3 @@
-## Use a recent OpenJDK runtime as a parent image
-#FROM openjdk:17-jdk-alpine
-
 # syntax=docker/dockerfile:1
 #Which "official Java image" ?
 FROM openjdk:oraclelinux8
@@ -14,4 +11,6 @@ RUN ./mvnw dependency:go-offline
 COPY src ./src
 EXPOSE 8081
 #run inside container
-CMD ["./mvnw", "spring-boot:run"]
+#CMD ["./mvnw", "spring-boot:run"]
+
+ENTRYPOINT ["java", "-jar", "devops-automation.jar"]
