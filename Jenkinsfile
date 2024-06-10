@@ -22,7 +22,6 @@ pipeline {
                         echo "DOCKER_USERNAME: $DOCKER_USERNAME"
                         echo "DOCKER_PASSWORD: $DOCKER_PASSWORD" // Do not use this in production!
 
-
                     // Push Docker image to Docker Hub
                     withCredentials([usernamePassword(credentialsId: DOCKER_CREDENTIALS_ID, usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                         sh "docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD"
