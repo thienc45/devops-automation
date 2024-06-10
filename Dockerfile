@@ -18,5 +18,7 @@ COPY target/devops-automation.jar devops-automation.jar
 # Make port 8081 available to the world outside this container
 EXPOSE 8081
 
-# Run the jar file
-ENTRYPOINT ["java", "-jar", "devops-automation.jar"]
+## Run the jar file
+#ENTRYPOINT ["java", "-jar", "devops-automation.jar"]
+
+CMD ["java", "-jar", "devops-automation.jar"]
