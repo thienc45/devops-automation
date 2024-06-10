@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = 'thienczai1/devopsautomation:latest'
-        DOCKER_CREDENTIALS_ID = 'docker-hub-credentials' // ID của thông tin xác thực Docker Hub
+        DOCKER_CREDENTIALS_ID = 'docker-hub-credentials'
         TAG_NAME = 'latest'
     }
 
@@ -19,6 +19,9 @@ pipeline {
                 script {
                     // Build Docker image
                     sh 'docker build -t $DOCKER_IMAGE .'
+                        echo "DOCKER_USERNAME: $DOCKER_USERNAME"
+                        echo "DOCKER_PASSWORD: $DOCKER_PASSWORD" // Do not use this in production!
+
 
                     // Push Docker image to Docker Hub
                     withCredentials([usernamePassword(credentialsId: DOCKER_CREDENTIALS_ID, usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
