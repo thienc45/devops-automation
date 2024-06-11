@@ -1,16 +1,24 @@
-# syntax=docker/dockerfile:1
-#Which "official Java image" ?
-FROM openjdk:oraclelinux8
-#working directory
+# Use a recent OpenJDK runtime as a parent image
+FROM openjdk:17-jdk-alpine
+
+# Set the working directory in the container
 WORKDIR /app
-#copy from your Host(PC, laptop) to container
+
+# Copy the Maven build files and source code
 COPY .mvn/ .mvn
 COPY mvnw pom.xml ./
-#Run this inside the image
-RUN ./mvnw dependency:go-offline
 COPY src ./src
-EXPOSE 8081
-#run inside container
-#CMD ["./mvnw", "spring-boot:run"]
 
+# Build the application
+RUN ./mvnw package -DskipTests
+
+# Copy the jar file into the container
+COPY target/devops-automation.jar devops-automation.jar
+
+# Make port 8081 available to the world outside this container
+EXPOSE 8081
+
+# Run the jar file
 ENTRYPOINT ["java", "-jar", "devops-automation.jar"]
+
+CMD ["java", "-jar", "devops-automation.jar"]

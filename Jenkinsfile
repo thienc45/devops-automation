@@ -1,40 +1,49 @@
 pipeline {
     agent any
 
-    environment {
-        DOCKER_IMAGE = 'thienczai1/devopsautomation:latest'
-        DOCKER_CREDENTIALS_ID = 'docker-hub-credentials'
-        TAG_NAME = 'latest'
-    }
-
     stages {
-        stage('Clone Repository') {
+
+        stage('Hello') {
             steps {
-              git branch: 'main', credentialsId: 'docker-hub-credentials', url: 'https://github.com/thienc45/devops-automation'
+                echo 'Hello World'
             }
         }
 
-        stage('Build and Push Docker Image') {
+        stage('Clone Repository') {
+            steps {
+                git branch: 'main', url: 'https://github.com/thienc45/devops-automation'
+            }
+        }
+
+        stage('Check Dockerfile') {
             steps {
                 script {
-                    // Build Docker image
-                    sh 'docker build -t $DOCKER_IMAGE .'
-                        echo "DOCKER_USERNAME: $DOCKER_USERNAME"
-                        echo "DOCKER_PASSWORD: $DOCKER_PASSWORD" // Do not use this in production!
-
-                    // Push Docker image to Docker Hub
-                    withCredentials([usernamePassword(credentialsId: DOCKER_CREDENTIALS_ID, usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                        sh "docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD"
-                        sh "docker push $DOCKER_IMAGE"
+                    def dockerfilePath = "${WORKSPACE}/Dockerfile"
+                    if (fileExists(dockerfilePath)) {
+                        echo "Dockerfile exists at ${dockerfilePath}"
+                    } else {
+                        echo "Dockerfile does not exist at ${dockerfilePath}"
                     }
                 }
             }
         }
-    }
 
-    post {
-        always {
-            cleanWs()
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    def dockerfilePath = "${WORKSPACE}/Dockerfile"
+                    if (fileExists(dockerfilePath)) {
+                        echo "Building Docker image from Dockerfile at ${dockerfilePath}"
+                        if (isUnix()) {
+                            sh "docker build -t thienczai1/devopsautomation -f ${dockerfilePath} ."
+                        } else {
+                            bat "docker build -t thienczai1/devopsautomation -f ${dockerfilePath} ."
+                        }
+                    } else {
+                        echo "Dockerfile does not exist at ${dockerfilePath}. Unable to build Docker image."
+                    }
+                }
+            }
         }
     }
 }
